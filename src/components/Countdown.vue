@@ -4,9 +4,9 @@
             <div class="p-2 items-center">
                 <div class="inline-block p-5 text-xl">Countdown:</div>
                 <div class="inline-block">
-                    <input type="text" placeholder="(Min)" class="px-3 py-3 border-2 border-black w-36 h-12" />
+                    <input type="text" v-model="user_input_min" placeholder="(Min)" class="px-3 py-3 border-2 border-black w-36 h-12" />
                 </div>
-                <div class="inline-block px-2"><button class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">START</button></div>
+                <div class="inline-block px-2"><button @click="convert_to_seconds(user_input_min)" class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">START</button></div>
             </div>
         </section>
         <section>
@@ -15,7 +15,8 @@
             </div>
         </section>
         <section>
-            <a class="inline-block ml-36 text-9xl">{{ timer }}</a>
+            <a class="inline-block ml-6 text-9xl">{{ display_min }} : {{ display_sec }}</a>
+            <div class="inline-block mx-5"><button class="bg-white-500 border-8 text-black py-2 px-4"></button></div>
         </section>
         <section>
             <div class="p-2 my-4">
@@ -30,11 +31,43 @@
 <script>
     export default {
         name: "Countdown",
+        props: {},
         data() {
             return {
-                countDownMessage: "More than halfway there!",
-                timer: "00",
+                countDownMessage: "",
+                user_input_min: null,
+                user_input_sec: null,
+                display_min: '00',
+                display_sec: '00',
+                speed: {
+                    type: Number,
+                    default: 1000,
+                },
             };
         },
+        methods: {
+            convert_to_seconds(user_input_min) {
+                    this.user_input_sec = user_input_min * 60
+                    console.log(this.user_input_sec);
+                    this.countdown(this.user_input_sec)
+            },
+            countdown(duration, stop) {
+                let that = this
+                let timer = duration,
+                    minutes,
+                    seconds;
+                setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    that.display_min = String(minutes).padStart(2, '0')
+                    that.display_sec = String(seconds).padStart(2, '0')
+
+                    if (--timer < 0) {
+                        timer = duration;
+                    }
+                }, 1000);
+            },
+        },
     };
-</script>
+    </script>
