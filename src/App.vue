@@ -8,7 +8,7 @@ import Countdown from './components/Countdown.vue'
 export default {
   name: 'App',
   components: {
-    Countdown
+    Countdown,
   }
 }
 </script>
