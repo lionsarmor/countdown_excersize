@@ -17,8 +17,8 @@
         <section>
             <a class="inline-block ml-6 text-9xl">{{ display_min }} : {{ display_sec }}</a>
             <div class="inline-block">
-                <button @click="play_pause = !play_pause, start_stop(play_pause)" class="absolute top-40 text-black py-2 px-4">
-                    <img id="play" width="62" :src="'src/assets/'+pause_image" alt="Play Button" />
+                <button @click="start_stop()" class="absolute top-40 text-black py-2 px-4">
+                    <img id="play" width="62" src="src/assets/pause.png" alt="Play Button" />
                 </button>
             </div>
         </section>
@@ -43,39 +43,18 @@
                 user_input_sec: null,
                 display_min: "00",
                 display_sec: "00",
-                save_time: null,
-                pause_image: "pause.png",
-                speed: {
-                    type: Number,
-                    default: 1000,
-                },
+                stop: false,
             };
         },
         methods: {
             convert_to_seconds(user_input_min) {
                 this.user_input_sec = user_input_min * 60;
-                console.log(this.user_input_sec);
                 this.countdown(this.user_input_sec);
             },
-            start_stop(pause) {
-                console.log(pause)
-                let that = this;
-                if (pause == false) {
-                    that.pause_image = "play.png";
-                    let new_duration = this.display_min * 60 + this.display_sec;
-                    this.countdown(new_duration);
-                } else {
-                    that.pause_image = "pause.png";
-                    this.save_time = {
-                        min: this.display_min,
-                        sec: this.display_sec,
-                    };
-                    console.log(that.countdown)
-                    
-                }
+            start_stop() {
+                this.stop = true
             },
             countdown(duration) {
-                console.log(duration)
                 let that = this;
                 let timer = duration,
                     minutes,
@@ -86,15 +65,14 @@
                     seconds = parseInt(timer % 60, 10);
                     that.display_min = String(minutes).padStart(2, "0");
                     that.display_sec = String(seconds).padStart(2, "0");
-                    console.log(that.display_min && that.display_sec)
-                    if (timer < 0 && --timer < 0) {
-                        timer = duration;
-                    }else {
-                        clearInterval(time)
-                        duration = 0
+                    if (--timer < 0 || that.stop == true) {
+                        clearInterval(time);
+                        that.user_input_min = null
+                        that.user_input_sec = null
+                        that.stop == false
                     }
                 }, 1000);
-            }, 
+            },
         },
     };
 </script>
