@@ -22,13 +22,13 @@
             <a :id="blink" :style="{ color: activeColor }" class="inline-block ml-6 text-9xl">{{ display_min }} : {{ display_sec }}</a>
             <div class="inline-block">
                 <button v-show="paused == false && start == true" @click="paused = true" class="absolute top-40 text-black py-2 px-4">
-                    <img id="play" width="62" src="src/assets/pause.png" alt="Play Button" />
+                    <img id="play" width="62" src="../assets/pause.png" alt="Play Button" />
                 </button>
                 <button v-show="paused == true && start == true" @click="paused = false, min_to_seconds()" class="absolute top-40 text-black py-2 px-4">
-                    <img id="play" width="62" src="src/assets/play.png" alt="Play Button" />
+                    <img id="play" width="62" src="../assets/play.png" alt="Play Button" />
                 </button>
                 <button v-show="countDownMessage == 'Stopped!'" @click="refresh()" class="absolute top-40 text-black py-2 px-4">
-                    <img id="play" width="62" src="src/assets/refresh.png" alt="Play Button" />
+                    <img id="play" width="62" src="../assets/refresh.png" alt="Play Button" />
                 </button>
             </div>
         </section>
