@@ -6,7 +6,7 @@
                 <div class="inline-block">
                     <input type="text" v-model="user_input_min" placeholder="(Min)" class="px-3 py-3 border-2 border-black w-36 h-12" />
                 </div>
-                <div class="inline-block px-2"><button @click="min_to_seconds()" class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">START</button></div>
+                <div class="inline-block px-2"><button :disabled="start" @click="start = true, min_to_seconds()" class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">START</button></div>
             </div>
         </section>
         <section>
@@ -17,8 +17,11 @@
         <section>
             <a class="inline-block ml-6 text-9xl">{{ display_min }} : {{ display_sec }}</a>
             <div class="inline-block">
-                <button @click="pause_switch()" class="absolute top-40 text-black py-2 px-4">
+                <button v-show="paused == false" @click="paused = true" class="absolute top-40 text-black py-2 px-4">
                     <img id="play" width="62" src="src/assets/pause.png" alt="Play Button" />
+                </button>
+                <button v-show="paused == true" @click="paused = false, min_to_seconds()" class="absolute top-40 text-black py-2 px-4">
+                    <img id="play" width="62" src="src/assets/play.png" alt="Play Button" />
                 </button>
             </div>
         </section>
@@ -44,17 +47,23 @@
                 display_sec: "00",
                 count: null,
                 speed: 1000,
-                pause: false,
+                paused: false,
+                start: false,
             };
         },
         methods: {
             min_to_seconds() {
-                this.pause == false
-                this.count = this.user_input_min * 60
+                this.paused == false;
+                if (this.count == null) {
+                    this.count = this.user_input_min * 60;
+                } else {
+                    this.count = Math.floor(this.count);
+                }
+                this.speed = 1000;
                 this.timer();
             },
             speed_adjust(adjust) {
-                console.log("pressed");
+                this.paused = false;
                 if (adjust == 1.5) {
                     this.speed = 750;
                 } else if (adjust == 2) {
@@ -63,23 +72,22 @@
                     this.speed = 1000;
                 }
             },
-            pause_switch() {
-                this.user_input_min = null
-                this.pause = true;
-            },
             timer() {
                 this.count--;
-                console.log(this.count);
                 let minutes = parseInt(this.count / 60, 10);
                 let seconds = parseInt(this.count % 60, 10);
                 this.display_min = String(minutes).padStart(2, "0");
                 this.display_sec = String(seconds).padStart(2, "0");
-                if (this.count < 1) {
+                if (this.count <= 0) {
                     return;
                 }
                 let timeout = setTimeout(this.timer, this.speed);
-                if (this.pause == true) {
-                    clearTimeout(timeout);
+                if (this.paused == true) {
+                    window.clearTimeout(timeout);
+                } else if (this.count == (this.user_input_min * 60) / 2) {
+                    this.countDownMessage = "More then halfway there!";
+                } else if (this.count == 20) {
+                    this.countDownMessage = "20";
                 }
             },
         },
