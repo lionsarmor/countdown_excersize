@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+#time_text {
+    animation: blink 0.02s 1000 alternate;
+  }
+  
+  @keyframes blink {
+    from { color: rgb(255, 0, 0); }
+    to { color: rgb(0, 0, 0); }
+  }
