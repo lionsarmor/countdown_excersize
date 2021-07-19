@@ -6,12 +6,16 @@
                 <div class="inline-block">
                     <input type="text" v-model="user_input_min" placeholder="(Min)" class="px-3 py-3 border-2 border-black w-36 h-12" />
                 </div>
-                <div class="inline-block px-2"><button :disabled="start" @click="start = true, min_to_seconds()" class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">START</button></div>
+                <div class="inline-block px-2">
+                    <button ref="start_button" :disabled="start" @click="start = true, countDownMessage = 'Begin!', min_to_seconds()" class="bg-green-400 border-4 hover:border-green-400 border-green-400 text-white font-bold py-2 px-4 h-12">
+                        START
+                    </button>
+                </div>
             </div>
         </section>
         <section>
-            <div class="p-2">
-                <a class="ml-24 italic text-xl">{{ countDownMessage }}</a>
+            <div v-show="countDownMessage != null" class="w-96 ml-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">{{ countDownMessage }}</strong>
             </div>
         </section>
         <section>
@@ -22,6 +26,9 @@
                 </button>
                 <button v-show="paused == true && start == true" @click="paused = false, min_to_seconds()" class="absolute top-40 text-black py-2 px-4">
                     <img id="play" width="62" src="src/assets/play.png" alt="Play Button" />
+                </button>
+                <button v-show="countDownMessage == 'Stopped!'" @click="refresh()" class="absolute top-40 text-black py-2 px-4">
+                    <img id="play" width="62" src="src/assets/refresh.png" alt="Play Button" />
                 </button>
             </div>
         </section>
@@ -40,7 +47,7 @@
         name: "Countdown",
         data() {
             return {
-                countDownMessage: "",
+                countDownMessage: null,
                 user_input_sec: null,
                 user_input_min: null,
                 display_min: "00",
@@ -64,6 +71,9 @@
                 }
                 this.speed = 1000;
                 this.timer();
+            },
+            refresh() {
+                window.location.reload();
             },
             speed_adjust(adjust) {
                 this.paused = false;
@@ -92,7 +102,7 @@
                 this.display_sec = String(seconds).padStart(2, "0");
                 if (this.count <= 0) {
                     this.countDownMessage = "Stopped!";
-                    this.start = "false";
+                    this.start = false;
                     return;
                 }
                 let timeout = setTimeout(this.timer, this.speed);
